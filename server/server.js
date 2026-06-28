@@ -7,9 +7,17 @@ const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
 const clientUrl = process.env.CLIENT_URL?.trim().replace(/\/+$/, '');
-const corsOptions = clientUrl
-  ? { origin: clientUrl, credentials: true }
-  : { origin: true, credentials: true };
+const allowedOrigins = ['http://localhost:5173', 'http://127.0.0.1:5173'];
+if (clientUrl) allowedOrigins.push(clientUrl);
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    callback(new Error(`CORS policy does not allow origin ${origin}`));
+  },
+  credentials: true,
+};
 
 app.use(cors(corsOptions));
 app.use(express.json());
