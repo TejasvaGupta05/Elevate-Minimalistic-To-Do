@@ -21,7 +21,7 @@ function TaskList({ tasks, loading, onStatusChange, onDelete, onUpdate, deleting
 
   if (!tasks.length) {
     return (
-      <div className="empty-state">
+      <div className="empty-state empty-state--centered">
         <div className="empty-state-content">
           <span className="empty-icon" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
@@ -29,7 +29,7 @@ function TaskList({ tasks, loading, onStatusChange, onDelete, onUpdate, deleting
               <path d="m9 9 2 2 4-4" />
             </svg>
           </span>
-          <div>No tasks yet — create your first one above</div>
+          <div className="empty-state-message">No tasks yet — create your first one to get started.</div>
         </div>
       </div>
     );

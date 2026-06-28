@@ -123,6 +123,8 @@ function App() {
     return { total: tasks.length, done };
   }, [tasks]);
 
+  const completionPercent = summary.total ? Math.round((summary.done / summary.total) * 100) : 0;
+
   const toastClassName = message
     ? message.toLowerCase().includes('failed') || message.toLowerCase().includes('error')
       ? 'toast toast--error'
@@ -142,9 +144,14 @@ function App() {
             <span>{summary.total}</span>
             <small>Total Tasks</small>
           </div>
-          <div className="stat-card">
-            <span>{summary.done}</span>
-            <small>Completed</small>
+          <div className="stat-card stat-card--progress">
+            <div className="progress-head">
+              <span className="progress-label">Completed</span>
+              <span className="progress-value">{completionPercent}%</span>
+            </div>
+            <div className="progress-track">
+              <div className="progress-fill" style={{ width: `${completionPercent}%` }} />
+            </div>
           </div>
         </div>
       </header>
