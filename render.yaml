@@ -1,5 +1,5 @@
 services:
-  - type: web_service
+  - type: web
     name: task-tracker-server
     env: node
     plan: free
