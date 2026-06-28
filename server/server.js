@@ -6,7 +6,7 @@ const taskRoutes = require('./routes/taskRoutes');
 const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
-const clientUrl = process.env.CLIENT_URL;
+const clientUrl = process.env.CLIENT_URL?.trim().replace(/\/+$/, '');
 const corsOptions = clientUrl
   ? { origin: clientUrl, credentials: true }
   : { origin: true, credentials: true };
