@@ -586,8 +586,8 @@ label {
 }
 
 .icon-btn {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   border-radius: 12px;
   border: 1px solid transparent;
   background: var(--color-input);
@@ -599,7 +599,7 @@ label {
 }
 
 .icon-btn:hover {
-  background: rgba(47, 111, 94, 0.1);
+  background: rgba(47, 111, 94, 0.12);
 }
 
 .icon-btn--secondary {
@@ -610,11 +610,12 @@ label {
   color: var(--color-danger);
 }
 
-.icon-btn svg {
-  width: 20px;
-  height: 20px;
+..icon-btn svg {
+  width: 34px;
+  height: 34px;
   display: block;
-  fill: currentColor;
+  stroke: currentColor;
+  fill: none;
 }
 
 .badge {
