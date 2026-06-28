@@ -1,0 +1,146 @@
+import { useEffect, useMemo, useState } from 'react';
+import { createTask, deleteTask, getTasks, updateTask } from './api/taskApi';
+import FilterBar from './components/FilterBar';
+import TaskForm from './components/TaskForm';
+import TaskList from './components/TaskList';
+
+function App() {
+  const [tasks, setTasks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [updating, setUpdating] = useState(false);
+  const [message, setMessage] = useState(null);
+  const [filters, setFilters] = useState({
+    status: '',
+    priority: '',
+    sortBy: 'createdAt',
+    order: 'desc',
+    search: '',
+  });
+
+  const fetchTasks = async (params = filters) => {
+    setLoading(true);
+    try {
+      const { data } = await getTasks(params);
+      setTasks(data);
+    } catch (error) {
+      setMessage(error?.response?.data?.message || 'Failed to load tasks');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchTasks(filters);
+  }, []);
+
+  useEffect(() => {
+    if (!message) return;
+    const timer = setTimeout(() => setMessage(null), 3000);
+    return () => clearTimeout(timer);
+  }, [message]);
+
+  const handleFiltersChange = (next) => {
+    const merged = { ...filters, ...next };
+    setFilters(merged);
+    fetchTasks(merged);
+  };
+
+  const handleCreate = async (payload) => {
+    setSubmitting(true);
+    try {
+      await createTask(payload);
+      setMessage('Task created successfully');
+      fetchTasks(filters);
+    } catch (error) {
+      setMessage(error?.response?.data?.message || 'Failed to create task');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleUpdate = async (id, payload) => {
+    setUpdating(true);
+    try {
+      await updateTask(id, payload);
+      setMessage('Task updated successfully');
+      fetchTasks(filters);
+      return true;
+    } catch (error) {
+      setMessage(error?.response?.data?.message || 'Failed to update task');
+      return false;
+    } finally {
+      setUpdating(false);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    setDeleting(true);
+    try {
+      await deleteTask(id);
+      setMessage('Task deleted successfully');
+      fetchTasks(filters);
+    } catch (error) {
+      setMessage(error?.response?.data?.message || 'Failed to delete task');
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  const handleStatusChange = async (id, status) => {
+    const task = tasks.find((item) => item._id === id);
+    if (!task) return;
+    await handleUpdate(id, { ...task, status });
+  };
+
+  const summary = useMemo(() => {
+    const done = tasks.filter((task) => task.status === 'done').length;
+    return { total: tasks.length, done };
+  }, [tasks]);
+
+  return (
+    <div className="app-shell">
+      <header className="hero">
+        <div>
+          <p className="eyebrow">Elevate</p>
+          <h1>Task Tracker</h1>
+          <p className="hero-copy">Create, sort, filter, and manage tasks from one simple dashboard.</p>
+        </div>
+        <div className="hero-stats">
+          <div className="stat-card">
+            <span>{summary.total}</span>
+            <small>Total Tasks</small>
+          </div>
+          <div className="stat-card">
+            <span>{summary.done}</span>
+            <small>Completed</small>
+          </div>
+        </div>
+      </header>
+
+      {message ? <div className="banner">{message}</div> : null}
+
+      <main className="content-grid">
+        <section className="left-column">
+          <TaskForm onSubmit={handleCreate} submitting={submitting} />
+          <FilterBar filters={filters} onChange={handleFiltersChange} />
+        </section>
+
+        <section className="right-column">
+          <TaskList
+            tasks={tasks}
+            loading={loading}
+            onStatusChange={handleStatusChange}
+            onDelete={handleDelete}
+            onUpdate={handleUpdate}
+            deleting={deleting}
+            updating={updating}
+          />
+        </section>
+      </main>
+    </div>
+  );
+}
+
+export default App;
