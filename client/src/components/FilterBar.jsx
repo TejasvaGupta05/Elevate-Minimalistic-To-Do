@@ -19,6 +19,17 @@ function FilterBar({ filters, onChange }) {
     onChange({ [e.target.name]: e.target.value });
   };
 
+  const handleStatusChange = (value) => {
+    onChange({ status: value });
+  };
+
+  const statusOptions = [
+    { value: '', label: 'All' },
+    { value: 'todo', label: 'To Do' },
+    { value: 'in-progress', label: 'In Progress' },
+    { value: 'done', label: 'Done' },
+  ];
+
   return (
     <div className="filter-toolbar">
       <div className="field-group field-group--search">
@@ -30,16 +41,6 @@ function FilterBar({ filters, onChange }) {
           placeholder="Search by title"
           onChange={(e) => setSearch(e.target.value)}
         />
-      </div>
-
-      <div className="field-group">
-        <label htmlFor="status">Status</label>
-        <select id="status" name="status" value={filters.status || ''} onChange={handleSelectChange}>
-          <option value="">All</option>
-          <option value="todo">Todo</option>
-          <option value="in-progress">In Progress</option>
-          <option value="done">Done</option>
-        </select>
       </div>
 
       <div className="field-group">
@@ -67,6 +68,23 @@ function FilterBar({ filters, onChange }) {
           <option value="asc">Ascending</option>
           <option value="desc">Descending</option>
         </select>
+      </div>
+
+      <div className="status-toggle-group" role="group" aria-label="Filter by status">
+        {statusOptions.map((option) => {
+          const isActive = (filters.status || '') === option.value;
+          return (
+            <button
+              key={option.value}
+              type="button"
+              className={`status-toggle ${isActive ? 'active' : ''}`}
+              data-status={option.value}
+              onClick={() => handleStatusChange(option.value)}
+            >
+              {option.label}
+            </button>
+          );
+        })}
       </div>
     </div>
   );

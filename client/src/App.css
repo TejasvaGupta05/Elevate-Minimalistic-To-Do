@@ -165,6 +165,12 @@ button:disabled {
 
 .create-task-panel {
   margin-bottom: 16px;
+  overflow: hidden;
+  animation: expandPanel 0.28s ease;
+}
+
+.create-task-panel .card {
+  animation: panelContentIn 0.24s ease;
 }
 
 .filter-toolbar {
@@ -188,6 +194,60 @@ button:disabled {
 .filter-toolbar label {
   font-size: 0.82rem;
   color: var(--color-muted);
+}
+
+.status-toggle-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.status-toggle {
+  min-height: 36px;
+  padding: 8px 12px;
+  border: 2px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-muted);
+  border-radius: var(--radius-pill);
+  transition: border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.status-toggle:hover {
+  transform: translateY(-1px);
+}
+
+.status-toggle.active {
+  box-shadow: 0 0 0 3px rgba(47, 111, 94, 0.12);
+}
+
+.status-toggle[data-status=''].active {
+  background: rgba(47, 111, 94, 0.12);
+  color: var(--color-primary);
+  border-color: rgba(47, 111, 94, 0.24);
+  box-shadow: 0 0 0 3px rgba(47, 111, 94, 0.12);
+}
+
+.status-toggle[data-status='todo'].active {
+  background: rgba(123, 117, 104, 0.12);
+  color: #6b675c;
+  border-color: rgba(123, 117, 104, 0.24);
+  box-shadow: 0 0 0 3px rgba(123, 117, 104, 0.14);
+}
+
+.status-toggle[data-status='in-progress'].active {
+  background: rgba(232, 163, 61, 0.16);
+  color: #9d6921;
+  border-color: rgba(232, 163, 61, 0.32);
+  box-shadow: 0 0 0 3px rgba(232, 163, 61, 0.16);
+}
+
+.status-toggle[data-status='done'].active {
+  background: rgba(47, 111, 94, 0.16);
+  color: var(--color-primary);
+  border-color: rgba(47, 111, 94, 0.28);
+  box-shadow: 0 0 0 3px rgba(47, 111, 94, 0.14);
 }
 
 .stat-card {
@@ -513,6 +573,30 @@ label {
   .form-grid,
   .filter-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@keyframes expandPanel {
+  from {
+    max-height: 0;
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    max-height: 900px;
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes panelContentIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
