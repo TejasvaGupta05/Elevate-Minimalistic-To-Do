@@ -13,7 +13,7 @@ services:
       - key: CLIENT_URL
         value: "<REPLACE_WITH_CLIENT_ORIGIN>"
         # Frontend origin, e.g. https://your-app.onrender.com
-  - type: static_site
+  - type: static
     name: task-tracker-client
     env: static
     plan: free
