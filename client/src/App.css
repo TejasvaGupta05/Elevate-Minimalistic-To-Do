@@ -599,7 +599,11 @@ label {
 }
 
 .icon-btn:hover {
-  background: rgba(47, 111, 94, 0.08);
+  background: rgba(47, 111, 94, 0.1);
+}
+
+.icon-btn--secondary {
+  color: var(--color-primary);
 }
 
 .icon-btn--danger {
@@ -610,6 +614,7 @@ label {
   width: 18px;
   height: 18px;
   display: block;
+  fill: currentColor;
 }
 
 .badge {

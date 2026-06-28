@@ -68,9 +68,8 @@ function TaskItem({ task, onStatusChange, onDelete, onUpdate, deleting, updating
               onClick={() => setIsEditing(true)}
               aria-label="Edit task"
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25Z" stroke="currentColor" />
-                <path d="M14.06 6.94 17.5 10.38" stroke="currentColor" />
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M3 14.5v2.5h2.5L16.81 6.69l-2.5-2.5L3 14.5Zm13.71-8.29a1 1 0 0 0 0-1.42l-1.5-1.5a1 1 0 0 0-1.42 0l-1.5 1.5 2.5 2.5 1.42-1.58Z" />
               </svg>
             </button>
             <button
@@ -80,12 +79,8 @@ function TaskItem({ task, onStatusChange, onDelete, onUpdate, deleting, updating
               disabled={deleting}
               aria-label="Delete task"
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M3 6h18" stroke="currentColor" />
-                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" stroke="currentColor" />
-                <path d="M19 6 17.5 20a2 2 0 0 1-2 2H8.5a2 2 0 0 1-2-2L5 6" stroke="currentColor" />
-                <path d="M10 11v6" stroke="currentColor" />
-                <path d="M14 11v6" stroke="currentColor" />
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M6 6V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v1h3v2H3V6h3Zm2 0h2v8H8V6Zm4 0h2v8h-2V6Zm-6 2h10v8a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V8Z" />
               </svg>
             </button>
           </div>
