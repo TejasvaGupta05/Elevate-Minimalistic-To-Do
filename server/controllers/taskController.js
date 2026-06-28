@@ -39,7 +39,7 @@ exports.getTasks = async (req, res, next) => {
   try {
     const { status, priority, sortBy = 'createdAt', order = 'desc', search } = req.query;
 
-    const filter = {};
+    const filter = { user: req.user.id };
     if (status) filter.status = status;
     if (priority) filter.priority = priority;
     if (search) filter.title = { $regex: search, $options: 'i' };
@@ -60,7 +60,7 @@ exports.getTasks = async (req, res, next) => {
 exports.getTaskById = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const task = await Task.findById(id).exec();
+    const task = await Task.findOne({ _id: id, user: req.user.id }).exec();
     if (!task) return res.status(404).json({ message: 'Task not found' });
     res.json(task);
   } catch (err) {
@@ -73,7 +73,7 @@ exports.createTask = async (req, res, next) => {
     const errors = validatePayload(req.body);
     if (errors.length) return res.status(400).json({ message: errors.join('; ') });
 
-    const task = new Task(req.body);
+    const task = new Task({ ...req.body, user: req.user.id });
     await task.save();
     res.status(201).json(task);
   } catch (err) {
@@ -87,10 +87,9 @@ exports.updateTask = async (req, res, next) => {
     const errors = validatePayload(req.body);
     if (errors.length) return res.status(400).json({ message: errors.join('; ') });
 
-    const task = await Task.findById(id).exec();
+    const task = await Task.findOne({ _id: id, user: req.user.id }).exec();
     if (!task) return res.status(404).json({ message: 'Task not found' });
 
-    // apply updates
     task.title = req.body.title !== undefined ? req.body.title : task.title;
     task.description = req.body.description !== undefined ? req.body.description : task.description;
     task.status = req.body.status !== undefined ? req.body.status : task.status;
@@ -107,7 +106,7 @@ exports.updateTask = async (req, res, next) => {
 exports.deleteTask = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const task = await Task.findByIdAndDelete(id).exec();
+    const task = await Task.findOneAndDelete({ _id: id, user: req.user.id }).exec();
     if (!task) return res.status(404).json({ message: 'Task not found' });
     res.json({ message: 'Task deleted successfully' });
   } catch (err) {

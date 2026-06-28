@@ -67,7 +67,7 @@ function TaskForm({ task, onSubmit, submitting, onCancel }) {
   return (
     <form className="card form-card" onSubmit={handleSubmit}>
       <div className="card-header">
-        <h2>{task ? 'Edit Task' : 'Create New Task'}</h2>
+        <h2>{task ? 'Edit Task' : 'Add New Task'}</h2>
       </div>
       <div className="form-fields">
       <div className="field-group">

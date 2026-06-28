@@ -10,6 +10,27 @@ const api = axios.create({
   baseURL,
 });
 
+export const setAuthToken = (token) => {
+  if (token) {
+    api.defaults.headers.common.Authorization = `Bearer ${token}`;
+    localStorage.setItem('taskTrackerToken', token);
+  } else {
+    delete api.defaults.headers.common.Authorization;
+    localStorage.removeItem('taskTrackerToken');
+  }
+};
+
+const existingToken = localStorage.getItem('taskTrackerToken');
+if (existingToken) {
+  setAuthToken(existingToken);
+}
+
+export const authApi = {
+  login: (payload) => api.post('/auth/login', payload),
+  register: (payload) => api.post('/auth/register', payload),
+  google: (payload) => api.post('/auth/google', payload),
+};
+
 export const getTasks = (params = {}) => api.get('/tasks', { params });
 export const getTask = (id) => api.get(`/tasks/${id}`);
 export const createTask = (data) => api.post('/tasks', data);

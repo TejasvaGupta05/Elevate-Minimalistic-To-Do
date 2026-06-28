@@ -737,6 +737,89 @@ label {
   color: var(--color-muted);
 }
 
+.auth-shell {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px 16px;
+}
+
+.auth-card {
+  width: min(460px, 100%);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 24px;
+  padding: 28px;
+  box-shadow: var(--shadow-card);
+}
+
+.auth-card h2 {
+  margin: 0 0 8px;
+  font-family: Georgia, 'Iowan Old Style', serif;
+  color: var(--color-text);
+}
+
+.auth-copy {
+  margin: 0 0 18px;
+  color: var(--color-muted);
+  line-height: 1.6;
+}
+
+.auth-toggle {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.auth-form {
+  display: grid;
+  gap: 8px;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 18px 0 12px;
+  color: var(--color-muted);
+  font-size: 0.9rem;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--color-border);
+}
+
+.auth-google-btn {
+  width: 100%;
+  justify-content: center;
+}
+
+.user-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  background: rgba(47, 111, 94, 0.06);
+  border: 1px solid rgba(47, 111, 94, 0.12);
+  border-radius: 16px;
+}
+
+.user-nav strong {
+  display: block;
+  color: var(--color-text);
+}
+
+.user-nav span {
+  color: var(--color-muted);
+  font-size: 0.9rem;
+}
+
 @media (min-width: 768px) {
   .content-grid {
     grid-template-columns: minmax(280px, 1fr) minmax(320px, 1.2fr);

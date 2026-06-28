@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const connectDB = require('./config/db');
 const taskRoutes = require('./routes/taskRoutes');
+const authRoutes = require('./routes/authRoutes');
 const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
@@ -26,6 +27,7 @@ connectDB();
 
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 
+app.use('/api/auth', authRoutes);
 app.use('/api/tasks', taskRoutes);
 
 app.use(errorHandler);

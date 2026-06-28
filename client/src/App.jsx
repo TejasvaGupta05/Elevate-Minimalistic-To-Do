@@ -1,10 +1,44 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { authApi, setAuthToken } from './api/taskApi';
 import { createTask, deleteTask, getTasks, updateTask } from './api/taskApi';
+import AuthPage from './components/AuthPage';
 import FilterBar from './components/FilterBar';
 import TaskForm from './components/TaskForm';
 import TaskList from './components/TaskList';
 
+const decodeGooglePayload = (token) => {
+  try {
+    const payload = token.split('.')[1];
+    const normalized = payload.replace(/-/g, '+').replace(/_/g, '/');
+    return JSON.parse(atob(normalized));
+  } catch {
+    return null;
+  }
+};
+
+// Polls until window.google.accounts.id is available (handles async/defer race)
+const waitForGoogle = (timeout = 10000) =>
+  new Promise((resolve, reject) => {
+    const start = Date.now();
+    const check = () => {
+      if (window.google?.accounts?.id) return resolve(window.google.accounts.id);
+      if (Date.now() - start > timeout) return reject(new Error('Google SDK timed out'));
+      setTimeout(check, 100);
+    };
+    check();
+  });
+
 function App() {
+  const getStoredUser = () => {
+    try {
+      return JSON.parse(localStorage.getItem('taskTrackerUser')) || null;
+    } catch {
+      return null;
+    }
+  };
+
+  const getStoredToken = () => localStorage.getItem('taskTrackerToken') || '';
+
   const cachedTasks = () => {
     try {
       return JSON.parse(localStorage.getItem('taskTrackerTasks')) || [];
@@ -15,11 +49,14 @@ function App() {
 
   const [tasks, setTasks] = useState(cachedTasks());
   const [loading, setLoading] = useState(cachedTasks().length === 0);
+  const [user, setUser] = useState(getStoredUser());
+  const [authReady, setAuthReady] = useState(Boolean(getStoredToken()));
   const [submitting, setSubmitting] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [updating, setUpdating] = useState(false);
   const [message, setMessage] = useState(null);
   const [showCreateForm, setShowCreateForm] = useState(false);
+  const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
   const [filters, setFilters] = useState({
     status: '',
     priority: '',
@@ -34,6 +71,66 @@ function App() {
     } catch {
       // Ignore localStorage failures for unsupported browsers or private mode
     }
+  };
+
+  const persistAuth = (token, nextUser) => {
+    if (token) {
+      localStorage.setItem('taskTrackerToken', token);
+    } else {
+      localStorage.removeItem('taskTrackerToken');
+    }
+
+    if (nextUser) {
+      localStorage.setItem('taskTrackerUser', JSON.stringify(nextUser));
+    } else {
+      localStorage.removeItem('taskTrackerUser');
+    }
+  };
+
+  const handleAuth = async (mode, values) => {
+    const payload = mode === 'login'
+      ? { email: values.email, password: values.password }
+      : { name: values.name, email: values.email, password: values.password };
+
+    const response = await authApi[mode](payload);
+    const token = response?.data?.token;
+    const nextUser = response?.data?.user;
+
+    if (!token || !nextUser) {
+      throw new Error('Authentication failed');
+    }
+
+    setAuthToken(token);
+    persistAuth(token, nextUser);
+    setUser(nextUser);
+    setAuthReady(true);
+    setMessage(`${mode === 'login' ? 'Logged in' : 'Account created'} successfully`);
+    fetchTasks(filters, false);
+  };
+
+  const googleBtnRef = useRef(null);
+
+  const handleGoogleSignIn = () => {
+    if (!googleClientId) {
+      setMessage('Google sign-in is not configured. Add VITE_GOOGLE_CLIENT_ID to your .env file.');
+      return;
+    }
+    // Click the real Google-rendered button inside the hidden container
+    const btn = googleBtnRef.current?.querySelector('[role="button"], div[tabindex]');
+    if (btn) {
+      btn.click();
+    } else {
+      setMessage('Google Sign-In is loading, please try again in a moment.');
+    }
+  };
+
+  const handleLogout = () => {
+    setAuthToken('');
+    persistAuth('', null);
+    setUser(null);
+    setAuthReady(false);
+    setTasks([]);
+    setMessage('You have been logged out');
   };
 
   const fetchTasks = async (params = filters, showLoading = true) => {
@@ -55,8 +152,57 @@ function App() {
   };
 
   useEffect(() => {
+    if (!authReady) return;
     fetchTasks(filters, tasks.length === 0);
-  }, []);
+  }, [authReady]);
+
+  useEffect(() => {
+    if (!googleClientId) return;
+
+    const onCredential = async (response) => {
+      const payload = decodeGooglePayload(response.credential);
+      try {
+        const result = await authApi.google({
+          idToken: response.credential,
+          name: payload?.name || '',
+          email: payload?.email || '',
+          picture: payload?.picture || '',
+        });
+        const token = result?.data?.token;
+        const nextUser = result?.data?.user;
+        if (!token || !nextUser) throw new Error('Google authentication failed');
+        setAuthToken(token);
+        persistAuth(token, nextUser);
+        setUser(nextUser);
+        setAuthReady(true);
+        setMessage('Signed in with Google');
+        fetchTasks(filters, false);
+      } catch (error) {
+        setMessage(error?.response?.data?.message || error?.message || 'Google sign-in failed');
+      }
+    };
+
+    // Wait for GSI SDK, initialize, then render a real (hidden) sign-in button
+    waitForGoogle()
+      .then((gid) => {
+        gid.initialize({
+          client_id: googleClientId,
+          callback: onCredential,
+          ux_mode: 'popup',
+        });
+        if (googleBtnRef.current) {
+          gid.renderButton(googleBtnRef.current, {
+            type: 'standard',
+            theme: 'outline',
+            size: 'large',
+            width: 280,
+          });
+        }
+      })
+      .catch(() => {
+        // SDK failed to load — handleGoogleSignIn click will show the error
+      });
+  }, [googleClientId]);
 
   useEffect(() => {
     if (!message) return;
@@ -131,8 +277,20 @@ function App() {
       : 'toast toast--success'
     : '';
 
+  if (!authReady || !user) {
+    return <AuthPage onAuthSuccess={handleAuth} onGoogleSignIn={handleGoogleSignIn} googleBtnRef={googleBtnRef} />;
+  }
+
   return (
     <div className="app-shell">
+      <div className="user-nav">
+        <div>
+          <strong>{user.name}</strong>
+          <span>{user.email}</span>
+        </div>
+        <button type="button" className="secondary-btn" onClick={handleLogout}>Logout</button>
+      </div>
+
       <header className="hero">
         <div className="hero-copy-block">
           <p className="eyebrow">Elevate</p>
