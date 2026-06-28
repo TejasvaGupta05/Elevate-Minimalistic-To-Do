@@ -1,7 +1,13 @@
 import axios from 'axios';
 
+const rawApiUrl = import.meta.env.VITE_API_URL;
+const apiBaseUrl = rawApiUrl
+  ? rawApiUrl.replace(/\/+$/, '')
+  : 'http://localhost:5000/api';
+const baseURL = apiBaseUrl.endsWith('/api') ? apiBaseUrl : `${apiBaseUrl}/api`;
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
+  baseURL,
 });
 
 export const getTasks = (params = {}) => api.get('/tasks', { params });
