@@ -123,10 +123,10 @@ function App() {
     return { total: tasks.length, done };
   }, [tasks]);
 
-  const bannerClassName = message
+  const toastClassName = message
     ? message.toLowerCase().includes('failed') || message.toLowerCase().includes('error')
-      ? 'banner error'
-      : 'banner success'
+      ? 'toast toast--error'
+      : 'toast toast--success'
     : '';
 
   return (
@@ -167,8 +167,8 @@ function App() {
       ) : null}
 
       {message ? (
-        <div className="banner-shell">
-          <div className={bannerClassName}>{message}</div>
+        <div className="toast-container" aria-live="polite">
+          <div className={toastClassName}>{message}</div>
         </div>
       ) : null}
 
