@@ -28,10 +28,19 @@ function AuthPage({ onAuthSuccess, googleBtnRef }) {
   return (
     <div className="auth-shell">
       <div className="auth-card">
+        <div className="auth-brand">
+          <div className="auth-brand-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M9 11l3 3L22 4" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </div>
+          <span className="auth-brand-name">Elevate</span>
+        </div>
         <p className="eyebrow">Secure access</p>
         <h2>{mode === 'login' ? 'Welcome back' : 'Create your account'}</h2>
         <p className="auth-copy">
-          Sign in to keep your personal tasks private and synced with your account.
+          Sign in to keep your tasks private and synced across devices.
         </p>
 
         <div className="auth-toggle" role="tablist" aria-label="Authentication mode">
@@ -61,7 +70,7 @@ function AuthPage({ onAuthSuccess, googleBtnRef }) {
             <input id="password" name="password" type="password" value={form.password} onChange={handleChange} placeholder="At least 6 characters" required />
           </div>
 
-          {error ? <p className="error-text">{error}</p> : null}
+          {error ? <div className="auth-error" role="alert">{error}</div> : null}
 
           <div className="form-actions">
             <button type="submit" className="primary-btn" disabled={loading}>

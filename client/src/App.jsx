@@ -269,13 +269,18 @@ function App() {
 
   return (
     <div className="app-shell">
-      <div className="user-nav">
-        <div>
-          <strong>{user.name}</strong>
-          <span>{user.email}</span>
+      <nav className="user-nav">
+        <div className="user-nav-info">
+          <div className="user-avatar" aria-hidden="true">
+            {user.name ? user.name.charAt(0).toUpperCase() : '?'}
+          </div>
+          <div className="user-nav-text">
+            <strong>{user.name}</strong>
+            <span>{user.email}</span>
+          </div>
         </div>
         <button type="button" className="secondary-btn" onClick={handleLogout}>Logout</button>
-      </div>
+      </nav>
 
       <header className="hero">
         <div className="hero-copy-block">
