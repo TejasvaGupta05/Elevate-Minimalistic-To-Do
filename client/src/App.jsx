@@ -5,8 +5,16 @@ import TaskForm from './components/TaskForm';
 import TaskList from './components/TaskList';
 
 function App() {
-  const [tasks, setTasks] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const cachedTasks = () => {
+    try {
+      return JSON.parse(localStorage.getItem('taskTrackerTasks')) || [];
+    } catch {
+      return [];
+    }
+  };
+
+  const [tasks, setTasks] = useState(cachedTasks());
+  const [loading, setLoading] = useState(cachedTasks().length === 0);
   const [submitting, setSubmitting] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [updating, setUpdating] = useState(false);
@@ -20,20 +28,34 @@ function App() {
     search: '',
   });
 
-  const fetchTasks = async (params = filters) => {
-    setLoading(true);
+  const saveTasksToCache = (data) => {
+    try {
+      localStorage.setItem('taskTrackerTasks', JSON.stringify(data));
+    } catch {
+      // Ignore localStorage failures for unsupported browsers or private mode
+    }
+  };
+
+  const fetchTasks = async (params = filters, showLoading = true) => {
+    if (showLoading) {
+      setLoading(true);
+    }
+
     try {
       const { data } = await getTasks(params);
       setTasks(data);
+      saveTasksToCache(data);
     } catch (error) {
       setMessage(error?.response?.data?.message || 'Failed to load tasks');
     } finally {
-      setLoading(false);
+      if (showLoading) {
+        setLoading(false);
+      }
     }
   };
 
   useEffect(() => {
-    fetchTasks(filters);
+    fetchTasks(filters, tasks.length === 0);
   }, []);
 
   useEffect(() => {
@@ -54,7 +76,7 @@ function App() {
       await createTask(payload);
       setMessage('Task created successfully');
       setShowCreateForm(false);
-      fetchTasks(filters);
+      fetchTasks(filters, false);
     } catch (error) {
       setMessage(error?.response?.data?.message || 'Failed to create task');
     } finally {
@@ -67,7 +89,7 @@ function App() {
     try {
       await updateTask(id, payload);
       setMessage('Task updated successfully');
-      fetchTasks(filters);
+      fetchTasks(filters, false);
       return true;
     } catch (error) {
       setMessage(error?.response?.data?.message || 'Failed to update task');
@@ -82,7 +104,7 @@ function App() {
     try {
       await deleteTask(id);
       setMessage('Task deleted successfully');
-      fetchTasks(filters);
+      fetchTasks(filters, false);
     } catch (error) {
       setMessage(error?.response?.data?.message || 'Failed to delete task');
     } finally {
