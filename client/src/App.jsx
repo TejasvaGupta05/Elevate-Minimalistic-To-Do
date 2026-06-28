@@ -110,20 +110,6 @@ function App() {
 
   const googleBtnRef = useRef(null);
 
-  const handleGoogleSignIn = () => {
-    if (!googleClientId) {
-      setMessage('Google sign-in is not configured. Add VITE_GOOGLE_CLIENT_ID to your .env file.');
-      return;
-    }
-    // Click the real Google-rendered button inside the hidden container
-    const btn = googleBtnRef.current?.querySelector('[role="button"], div[tabindex]');
-    if (btn) {
-      btn.click();
-    } else {
-      setMessage('Google Sign-In is loading, please try again in a moment.');
-    }
-  };
-
   const handleLogout = () => {
     setAuthToken('');
     persistAuth('', null);
@@ -278,7 +264,7 @@ function App() {
     : '';
 
   if (!authReady || !user) {
-    return <AuthPage onAuthSuccess={handleAuth} onGoogleSignIn={handleGoogleSignIn} googleBtnRef={googleBtnRef} />;
+    return <AuthPage onAuthSuccess={handleAuth} googleBtnRef={googleBtnRef} />;
   }
 
   return (

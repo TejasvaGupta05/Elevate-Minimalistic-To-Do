@@ -796,6 +796,34 @@ label {
 .auth-google-btn {
   width: 100%;
   justify-content: center;
+  display: flex;
+  align-items: center;
+}
+
+/* Overlay pattern: wrapper is the click zone */
+.google-btn-wrapper {
+  position: relative;
+  width: 100%;
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+
+/* The real Google-rendered iframe sits on top, invisible but captures clicks */
+.google-btn-overlay {
+  position: absolute;
+  inset: 0;
+  /* opacity:0 hides it completely but some browsers skip rendering invisible iframes.
+     opacity:0.01 is effectively invisible but forces full iframe render + interactivity. */
+  opacity: 0.01;
+  cursor: pointer;
+  z-index: 1;
+}
+
+/* Make Google's iframe fill the entire overlay div */
+.google-btn-overlay iframe {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 44px;
 }
 
 .user-nav {

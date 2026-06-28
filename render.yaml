@@ -12,7 +12,13 @@ services:
         # MongoDB Atlas connection string for your production database
       - key: CLIENT_URL
         value: "<REPLACE_WITH_CLIENT_ORIGIN>"
-        # Frontend origin, e.g. https://your-app.onrender.com
+        # Frontend origin, e.g. https://elevate-to-do.onrender.com
+      - key: JWT_SECRET
+        value: "<REPLACE_WITH_A_LONG_RANDOM_SECRET>"
+        # Strong random string used to sign JWTs — never share this
+      - key: GOOGLE_CLIENT_ID
+        value: "<REPLACE_WITH_GOOGLE_CLIENT_ID>"
+        # Google OAuth client ID — same value as VITE_GOOGLE_CLIENT_ID on the client
   - type: web
     runtime: static
     name: task-tracker-client
@@ -23,4 +29,9 @@ services:
     envVars:
       - key: VITE_API_URL
         value: "<REPLACE_WITH_BACKEND_API_URL>"
-        # Backend API base URL, e.g. https://your-server.onrender.com/api
+        # Backend API base URL, e.g. https://elevate-to-do-server.onrender.com
+      - key: VITE_GOOGLE_CLIENT_ID
+        value: "<REPLACE_WITH_GOOGLE_CLIENT_ID>"
+        # Google OAuth client ID — must match GOOGLE_CLIENT_ID on the server
+        # IMPORTANT: After changing this value you must trigger a new Render deploy
+        # because Vite bakes env vars into the static build at build time.
