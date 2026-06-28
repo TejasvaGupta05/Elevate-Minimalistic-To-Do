@@ -6,17 +6,12 @@ const taskRoutes = require('./routes/taskRoutes');
 const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://elevate-to-do-server.onrender.com/",
-];
+const clientUrl = process.env.CLIENT_URL;
+const corsOptions = clientUrl
+  ? { origin: clientUrl, credentials: true }
+  : { origin: true, credentials: true };
 
-app.use(
-  cors({
-    origin: allowedOrigins,
-    credentials: true,
-  })
-);
+app.use(cors(corsOptions));
 app.use(express.json());
 
 connectDB();

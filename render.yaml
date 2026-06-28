@@ -1,0 +1,26 @@
+services:
+  - type: web_service
+    name: task-tracker-server
+    env: node
+    plan: free
+    root: server
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: MONGO_URI
+        value: "<REPLACE_WITH_MONGODB_ATLAS_URI>"
+        # MongoDB Atlas connection string for your production database
+      - key: CLIENT_URL
+        value: "<REPLACE_WITH_CLIENT_ORIGIN>"
+        # Frontend origin, e.g. https://your-app.onrender.com
+  - type: static_site
+    name: task-tracker-client
+    env: static
+    plan: free
+    root: client
+    buildCommand: npm install && npm run build
+    publishPath: dist
+    envVars:
+      - key: VITE_API_URL
+        value: "<REPLACE_WITH_BACKEND_API_URL>"
+        # Backend API base URL, e.g. https://your-server.onrender.com/api
