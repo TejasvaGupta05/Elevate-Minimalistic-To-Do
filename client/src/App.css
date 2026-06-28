@@ -70,10 +70,10 @@ button, input, select, textarea { font: inherit; }
 
 input, select, textarea {
   width: 100%;
-  min-height: 42px;
+  min-height: 36px;
   border: 1.5px solid transparent;
   border-radius: var(--radius-md);
-  padding: 10px 14px;
+  padding: 8px 12px;
   background: var(--color-input-bg);
   color: var(--color-text);
   font-size: 0.95rem;
@@ -94,7 +94,7 @@ input:focus, select:focus, textarea:focus {
 
 textarea {
   resize: vertical;
-  min-height: 100px;
+  min-height: 70px;
 }
 
 select {
@@ -128,22 +128,26 @@ button:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important;
   max-width: 960px;
   margin: 0 auto;
   padding: 24px 20px 56px;
+  position: relative;
 }
 
 /* ─────────────────────────────────────
    USER NAV
 ───────────────────────────────────── */
 .user-nav {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  z-index: 10;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 12px;
-  margin-bottom: 22px;
-  padding: 8px 12px 8px 16px;
+  padding: 6px 12px;
   background: var(--color-surface);
   border: 1.5px solid var(--color-border);
   border-radius: var(--radius-pill);
-  box-shadow: var(--shadow-xs);
+  box-shadow: var(--shadow-sm);
 }
 
 .user-nav-info {
@@ -276,7 +280,7 @@ button:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important;
   flex: 2;
   display: grid;
   gap: 12px;
-  padding: 16px;
+  padding: px;
 }
 
 .progress-head {
@@ -485,8 +489,8 @@ button:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important;
 .field-group {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  margin-bottom: 14px;
+  gap: 4px;
+  margin-bottom: 10px;
 }
 
 label {
@@ -1136,7 +1140,7 @@ label {
   .hero-stats { flex-wrap: wrap; width: 100%; }
   .stat-card  { flex: 1 1 130px; }
   .hero-actions { padding: 12px 14px; }
-  .user-nav   { border-radius: var(--radius-lg); }
+  .user-nav   { position: static; margin-bottom: 20px; width: 100%; justify-content: space-between; border-radius: var(--radius-lg); }
   .task-card  { padding: 14px 16px 14px 18px; }
   .auth-card  { padding: 28px 20px; }
   .toast-container { bottom: 16px; right: 14px; left: 14px; align-items: stretch; }

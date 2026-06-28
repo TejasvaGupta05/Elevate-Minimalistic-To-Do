@@ -90,7 +90,7 @@ function TaskForm({ task, onSubmit, submitting, onCancel }) {
           name="description"
           value={form.description}
           onChange={handleChange}
-          rows="4"
+          rows="2"
           placeholder="Add notes or details"
         />
         {validation.description ? <p className="error-text">{validation.description}</p> : null}
