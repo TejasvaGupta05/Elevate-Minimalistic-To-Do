@@ -20,8 +20,8 @@ function FilterBar({ filters, onChange }) {
   };
 
   return (
-    <div className="card filter-bar">
-      <div className="field-group">
+    <div className="filter-toolbar">
+      <div className="field-group field-group--search">
         <label htmlFor="search">Search</label>
         <input
           id="search"
@@ -32,43 +32,41 @@ function FilterBar({ filters, onChange }) {
         />
       </div>
 
-      <div className="filter-grid">
-        <div className="field-group">
-          <label htmlFor="status">Status</label>
-          <select id="status" name="status" value={filters.status || ''} onChange={handleSelectChange}>
-            <option value="">All</option>
-            <option value="todo">Todo</option>
-            <option value="in-progress">In Progress</option>
-            <option value="done">Done</option>
-          </select>
-        </div>
+      <div className="field-group">
+        <label htmlFor="status">Status</label>
+        <select id="status" name="status" value={filters.status || ''} onChange={handleSelectChange}>
+          <option value="">All</option>
+          <option value="todo">Todo</option>
+          <option value="in-progress">In Progress</option>
+          <option value="done">Done</option>
+        </select>
+      </div>
 
-        <div className="field-group">
-          <label htmlFor="priority">Priority</label>
-          <select id="priority" name="priority" value={filters.priority || ''} onChange={handleSelectChange}>
-            <option value="">All</option>
-            <option value="low">Low</option>
-            <option value="medium">Medium</option>
-            <option value="high">High</option>
-          </select>
-        </div>
+      <div className="field-group">
+        <label htmlFor="priority">Priority</label>
+        <select id="priority" name="priority" value={filters.priority || ''} onChange={handleSelectChange}>
+          <option value="">All</option>
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+        </select>
+      </div>
 
-        <div className="field-group">
-          <label htmlFor="sortBy">Sort By</label>
-          <select id="sortBy" name="sortBy" value={filters.sortBy || 'createdAt'} onChange={handleSelectChange}>
-            <option value="createdAt">Created</option>
-            <option value="dueDate">Due Date</option>
-            <option value="priority">Priority</option>
-          </select>
-        </div>
+      <div className="field-group">
+        <label htmlFor="sortBy">Sort By</label>
+        <select id="sortBy" name="sortBy" value={filters.sortBy || 'createdAt'} onChange={handleSelectChange}>
+          <option value="createdAt">Created</option>
+          <option value="dueDate">Due Date</option>
+          <option value="priority">Priority</option>
+        </select>
+      </div>
 
-        <div className="field-group">
-          <label htmlFor="order">Order</label>
-          <select id="order" name="order" value={filters.order || 'desc'} onChange={handleSelectChange}>
-            <option value="asc">Ascending</option>
-            <option value="desc">Descending</option>
-          </select>
-        </div>
+      <div className="field-group">
+        <label htmlFor="order">Order</label>
+        <select id="order" name="order" value={filters.order || 'desc'} onChange={handleSelectChange}>
+          <option value="asc">Ascending</option>
+          <option value="desc">Descending</option>
+        </select>
       </div>
     </div>
   );

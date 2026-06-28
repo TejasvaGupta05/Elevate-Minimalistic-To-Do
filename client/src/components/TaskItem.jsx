@@ -31,9 +31,9 @@ function TaskItem({ task, onStatusChange, onDelete, onUpdate, deleting, updating
   }
 
   return (
-    <div className={`card task-card ${isOverdue ? 'overdue' : ''}`}>
+    <div className={`card task-card ${isOverdue ? 'overdue' : ''}`} data-priority={task.priority}>
       <div className="task-card-header">
-        <div>
+        <div className="task-summary">
           <h3>{task.title}</h3>
           {isOverdue ? <span className="badge overdue-badge">Overdue</span> : null}
         </div>

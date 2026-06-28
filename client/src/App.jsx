@@ -11,6 +11,7 @@ function App() {
   const [deleting, setDeleting] = useState(false);
   const [updating, setUpdating] = useState(false);
   const [message, setMessage] = useState(null);
+  const [showCreateForm, setShowCreateForm] = useState(false);
   const [filters, setFilters] = useState({
     status: '',
     priority: '',
@@ -52,6 +53,7 @@ function App() {
     try {
       await createTask(payload);
       setMessage('Task created successfully');
+      setShowCreateForm(false);
       fetchTasks(filters);
     } catch (error) {
       setMessage(error?.response?.data?.message || 'Failed to create task');
@@ -99,10 +101,16 @@ function App() {
     return { total: tasks.length, done };
   }, [tasks]);
 
+  const bannerClassName = message
+    ? message.toLowerCase().includes('failed') || message.toLowerCase().includes('error')
+      ? 'banner error'
+      : 'banner success'
+    : '';
+
   return (
     <div className="app-shell">
       <header className="hero">
-        <div>
+        <div className="hero-copy-block">
           <p className="eyebrow">Elevate</p>
           <h1>Task Tracker</h1>
           <p className="hero-copy">Create, sort, filter, and manage tasks from one simple dashboard.</p>
@@ -119,15 +127,31 @@ function App() {
         </div>
       </header>
 
-      {message ? <div className="banner">{message}</div> : null}
+      <div className="hero-actions">
+        <FilterBar filters={filters} onChange={handleFiltersChange} />
+        <button
+          type="button"
+          className="primary-btn create-task-btn"
+          onClick={() => setShowCreateForm((prev) => !prev)}
+        >
+          {showCreateForm ? 'Close' : '+ New Task'}
+        </button>
+      </div>
+
+      {showCreateForm ? (
+        <div className="create-task-panel">
+          <TaskForm onSubmit={handleCreate} submitting={submitting} />
+        </div>
+      ) : null}
+
+      {message ? (
+        <div className="banner-shell">
+          <div className={bannerClassName}>{message}</div>
+        </div>
+      ) : null}
 
       <main className="content-grid">
-        <section className="left-column">
-          <TaskForm onSubmit={handleCreate} submitting={submitting} />
-          <FilterBar filters={filters} onChange={handleFiltersChange} />
-        </section>
-
-        <section className="right-column">
+        <section className="right-column full-width">
           <TaskList
             tasks={tasks}
             loading={loading}

@@ -69,6 +69,7 @@ function TaskForm({ task, onSubmit, submitting, onCancel }) {
       <div className="card-header">
         <h2>{task ? 'Edit Task' : 'Create New Task'}</h2>
       </div>
+      <div className="form-fields">
       <div className="field-group">
         <label htmlFor="title">Title</label>
         <input
@@ -129,6 +130,7 @@ function TaskForm({ task, onSubmit, submitting, onCancel }) {
             Cancel
           </button>
         ) : null}
+      </div>
       </div>
     </form>
   );
